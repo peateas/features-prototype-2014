@@ -5,9 +5,9 @@ require 'capybara/poltergeist'
 
 include Log4r
 
-def logger name
+def logger(name)
   unless defined?(formatter) and formatter
-    formatter = PatternFormatter.new(:pattern => "%d %c %l - %m")
+    formatter = PatternFormatter.new(:pattern => '%d %c %l - %m')
   end
   logger = Log4r::Logger[name]
   unless logger
@@ -16,6 +16,7 @@ def logger name
     unless console
       console = Log4r::StderrOutputter.new(:console)
       console.level=WARN
+      # noinspection RubyScope
       console.formatter=formatter
     end
     log_name = "logs/#{logger.name}.log"
@@ -41,19 +42,11 @@ if ENV['IN_BROWSER']
   end
 else
   # DEFAULT: headless tests with poltergeist/PhantomJS
-  Capybara.register_driver :poltergeist do |app|
-    Capybara::Poltergeist::Driver.new(
-        app,
-        js_errors: false,
-        window_size: [1280, 1024] #,
-                                  #debug:       true
-    )
-  end
   Capybara.default_driver = :poltergeist
   Capybara.javascript_driver = :poltergeist
 end
 
-Capybara.app_host = 'http://simdex.is'
+Capybara.app_host = 'http://tempo.io'
 Capybara.run_server = false
 Capybara.default_wait_time = 5
 Capybara.default_selector = :css
@@ -63,12 +56,12 @@ World(RSpec::Matchers)
 
 Before do |scenario|
   case scenario
-    when Cucumber::Ast::Scenario
+    when Cucumber::Core::Ast::Scenario
       feature = scenario.feature
       title=scenario.title
-    when Cucumber::Ast::OutlineTable::ExampleRow
-      feature = scenario.scenario_outline.feature
-      title = scenario.scenario_outline.title
+    # when Cucumber::Core::Ast::OutlineTable::ExampleRow
+    #   feature = scenario.scenario_outline.feature
+    #   title = scenario.scenario_outline.title
     else
       feature = nil
       title = ''

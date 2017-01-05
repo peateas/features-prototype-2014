@@ -12,4 +12,4 @@ Feature:  User visits website
 
   Examples:
     | page | title  |
-    | /    | SimDex |
+    | /    | Tempo |
